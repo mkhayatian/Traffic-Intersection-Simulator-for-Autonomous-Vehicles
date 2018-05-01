@@ -1,4 +1,4 @@
-function [Network,RequestedVehiclesList] = IntersectionManagement(Network,RequestedVehiclesListPrevious,Vmax,Vmin,laneWidth,TransmitLine,TIME)
+function [Network,RequestedVehiclesList] = IntersectionManagement(Network,RequestedVehiclesListPrevious,Vmax,Vmin,laneWidth,TransmitLine,TIME,CarLength)
 RequestedVehiclesList = RequestedVehiclesListPrevious;  % initialization
 arc = 2 * pi * (3.5*laneWidth) /4;
 smallArc = 2 * pi * (0.5*laneWidth) /4;
@@ -241,10 +241,10 @@ if ~isempty(Network)
                             break;
                         end
                     end
-                    DX2 = d2 + TransmitLine - TravelledDistance2;
+                    DX2 = d2 + TransmitLine - TravelledDistance2 + CarLength/2;
                     TimeOfConflict = DX2/assignedVelocity2;
                     DT = TimeOfConflict + SafetyTimeBuffer;
-                    DX1 = d1 + TransmitLine;
+                    DX1 = d1 + TransmitLine - CarLength/2;
                     Velocity(jj) = DX1/DT;
                     
                     if DX2<=0

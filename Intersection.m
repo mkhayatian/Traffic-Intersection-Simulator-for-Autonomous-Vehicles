@@ -11,8 +11,8 @@ close all;
 rng(44)
 % Parameters
 SimulationTime = 270;       % Seconds
-StepTime = 0.01;            % Seconds
-flow = 0.05;                   % Car/Second/Road
+StepTime = 0.1;            % Seconds
+flow = 0.03;                   % Car/Second/Road
 SpawnThreshold = 1/flow;    % Seconds
 NumberOfRoads = 4;          % DON'T CHANGE
 NumberOfLanesPerRoad = 3;    % DON'T CHANGE
@@ -28,10 +28,10 @@ IntersectionBounds.yb3 = IntersectionBounds.xb3;
 IntersectionBounds.yb4 = IntersectionBounds.xb4;
 
 laneWidth = (IntersectionBounds.xb3-IntersectionBounds.xb2)/(NumberOfLanesPerRoad*2);
-TransmitLine = 100;
+TransmitLine = 150;
 TurnSpace = 2;
 %% Print parameters
-printStep = 30;
+printStep = 5;
 printLabel = 0;         %% no print = 0, print ID = 1, print Speed = 2;
 
 %% Car Parameters
@@ -89,7 +89,7 @@ while (time < SimulationTime)
         [Network, VehicleList] = SendToNetwork(VehicleList, Network, IntersectionBounds, TransmitLine);
         [Network, VehicleList] = ReceiveFromNetwork(VehicleList, Network);
         VehicleList = PathPlanning(VehicleList,laneWidth,IntersectionBounds,TurnSpace,Vmax);
-        VehicleList = ACC(VehicleList,CarLength); % Adaptive Cruise Control
+        VehicleList = ACC(VehicleList,CarLength);               % Adaptive Cruise Control
         VehicleList = vehicleDynamics(VehicleList,L,StepTime,amax,amin);
     end
     %% Remove out of bound vehicles
@@ -108,7 +108,7 @@ while (time < SimulationTime)
     
     %% Intersection Manager (IM)
     for iteration = 1 : ComputationSpeedFactor
-        [Network, RequestedVehiclesListNew] = IntersectionManagement(Network, RequestedVehiclesList,Vmax,Vmin,laneWidth,TransmitLine,time);
+        [Network, RequestedVehiclesListNew] = IntersectionManagement(Network, RequestedVehiclesList,Vmax,Vmin,laneWidth,TransmitLine,time,CarLength);
         RequestedVehiclesList = RequestedVehiclesListNew;
     end
     
@@ -119,19 +119,22 @@ while (time < SimulationTime)
     %% drawing
     if rem(count,printStep)==0
         drawVehicle(VehicleList,CarLength,CarWidth,printLabel)
-        drawIM(IntersectionBounds,TransmitLine)
-        text(80,100,'time');text(100,100,num2str(time));
-        text(80,120,'Network');text(120,120,num2str(length(Network)));
-        axis ([IntersectionBounds.xb1-10 IntersectionBounds.xb4+10 IntersectionBounds.yb1-10 IntersectionBounds.yb4+10])
+        drawIM(IntersectionBounds,TransmitLine,laneWidth)
+%         text(80,100,'time');text(100,100,num2str(time));
+%         text(80,120,'Network');text(120,120,num2str(length(Network)));
+        axis ([IntersectionBounds.xb1 IntersectionBounds.xb4 IntersectionBounds.yb1 IntersectionBounds.yb4])
         ax = gcf;
-        ax.Position = [680   204   925   774];
+        ax.Position = [1 41 1920 963];
+        zlim([0 45]);
+        view(50,85)
+        grid on
         pause(0.0001)
         cla
     end
     count = count + 1;
 end
-drawIM(IntersectionBounds,TransmitLine)
+drawIM(IntersectionBounds,TransmitLine,laneWidth)
 axis ([IntersectionBounds.xb1-10 IntersectionBounds.xb4+10 IntersectionBounds.yb1-10 IntersectionBounds.yb4+10])
 ax = gcf;
-ax.Position = [680   204   925   774];
+ax.Position = [1 41 1920 963];
 disp(failures)

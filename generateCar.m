@@ -18,6 +18,9 @@ car.desiredSpeed = car.speed;
 car.integralError = 0;
 car.previousSpeed = car.speed;
 car.hasRequested = 0;
+colors = lines(30);
+car.color = colors(ceil(rand*29),:);
+
 
 
 if (Lane == 1)
