@@ -3,6 +3,7 @@ height = 3;
 for i = 1:length(VehicleList)
     PosX = VehicleList(i).position.x;
     PosY = VehicleList(i).position.y;
+    PosZ = 5;
     phi = VehicleList(i).heading;
     color = VehicleList(i).color;
     recX0=[-CarLength/2 CarLength/2 CarLength/2 -CarLength/2 -CarLength/2];
@@ -20,9 +21,9 @@ for i = 1:length(VehicleList)
     
     drawBox(recX,recY,height,color)
     if printLabel == 1
-        text(PosX,PosY,num2str(VehicleList(i).ID))
+        text(PosX,PosY,PosZ,num2str(VehicleList(i).ID))
     end
     if printLabel == 2
-        text(PosX,PosY,num2str(VehicleList(i).speed,3))
+        text(PosX,PosY,PosZ,num2str(VehicleList(i).speed,4))
     end
 end

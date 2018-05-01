@@ -20,7 +20,7 @@ car.previousSpeed = car.speed;
 car.hasRequested = 0;
 colors = lines(30);
 car.color = colors(ceil(rand*29),:);
-
+car.ActuationTimestamp = 0;
 
 
 if (Lane == 1)

@@ -1,4 +1,4 @@
-function [NetworkBuffer, VehicleList] = SendToNetwork(VehicleList, NetworkBuffer,IntersectionBounds,TransmitLine)
+function [NetworkBuffer, VehicleList] = SendToNetwork(VehicleList, NetworkBuffer,IntersectionBounds,TransmitLine,time)
 
 BufferSize = 1000; 
 if length(NetworkBuffer) > BufferSize
@@ -23,9 +23,12 @@ for i = 1:length(VehicleList)
                 Packet.msg.position.x = x;
                 Packet.msg.position.y = y;
                 Packet.msg.speed = v;
+                Packet.timestamp =time;
                 Packet.msg.DestinationLane = DestinationLane;
+                Packet.delay = 0.2*rand;
                 NetworkBuffer = [NetworkBuffer; Packet];
                 VehicleList(i).hasRequested = 1;
+                
             end
         end
         if (Lane == 4) || (Lane == 5) || (Lane == 6) 
@@ -37,9 +40,12 @@ for i = 1:length(VehicleList)
                 Packet.msg.position.x = x;
                 Packet.msg.position.y = y;
                 Packet.msg.speed = v;
+                Packet.timestamp =time;
                 Packet.msg.DestinationLane = DestinationLane;
+                Packet.delay = 0.2*rand;
                 NetworkBuffer = [NetworkBuffer; Packet];
                 VehicleList(i).hasRequested = 1;
+                
             end
         end
         if (Lane == 7) || (Lane == 8) || (Lane == 9) 
@@ -51,9 +57,12 @@ for i = 1:length(VehicleList)
                 Packet.msg.position.x = x;
                 Packet.msg.position.y = y;
                 Packet.msg.speed = v;
+                Packet.timestamp =time;
                 Packet.msg.DestinationLane = DestinationLane;
+                Packet.delay = 0.2*rand;
                 NetworkBuffer = [NetworkBuffer; Packet];
                 VehicleList(i).hasRequested = 1;
+                
             end
         end
         if (Lane == 10) || (Lane == 11) || (Lane == 12) 
@@ -65,9 +74,12 @@ for i = 1:length(VehicleList)
                 Packet.msg.position.x = x;
                 Packet.msg.position.y = y;
                 Packet.msg.speed = v;
+                Packet.timestamp =time;
                 Packet.msg.DestinationLane = DestinationLane;
+                Packet.delay = 0.2*rand;
                 NetworkBuffer = [NetworkBuffer; Packet];
                 VehicleList(i).hasRequested = 1;
+                
             end
         end
     end

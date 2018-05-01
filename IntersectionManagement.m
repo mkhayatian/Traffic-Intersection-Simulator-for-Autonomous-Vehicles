@@ -1,4 +1,4 @@
-function [Network,RequestedVehiclesList] = IntersectionManagement(Network,RequestedVehiclesListPrevious,Vmax,Vmin,laneWidth,TransmitLine,TIME,CarLength)
+function [Network,RequestedVehiclesList] = IntersectionManagement(Network,RequestedVehiclesListPrevious,Vmax,Vmin,laneWidth,TransmitLine,TIME,CarLength,WCRTD)
 RequestedVehiclesList = RequestedVehiclesListPrevious;  % initialization
 arc = 2 * pi * (3.5*laneWidth) /4;
 smallArc = 2 * pi * (0.5*laneWidth) /4;
@@ -11,15 +11,25 @@ if ~isempty(Network)
     ii = 1;
     found = 0;
     while (ii <= length(Network)) && (found == 0)
-        if strcmp(Network(ii).to, 'IM')       % if the packet if meant to be for the intersection manager 
+        if strcmp(Network(ii).to, 'IM') && TIME >  Network(ii).delay + Network(ii).timestamp     % if the packet if meant to be for the intersection manager 
            Packet = Network(ii);
            %% Unmarshaling the packet
            ID = Packet.ID;
            Lane = Packet.msg.lane;
+           timestamp = Packet.timestamp;
            x1 = Packet.msg.position.x;
            y1 = Packet.msg.position.y;
            v1 = Packet.msg.speed;
            DestinationLane1 = Packet.msg.DestinationLane;
+           if (Lane == 1 || Lane == 2 || Lane == 3)
+               x1 = (TIME - timestamp) * v1 + x1;
+           elseif (Lane == 4 || Lane == 5 || Lane == 6)
+               y1 = (TIME - timestamp) * v1 + y1;
+           elseif (Lane == 7 || Lane == 8 || Lane == 9)
+               x1 = -(TIME - timestamp) * v1 + x1;
+           elseif (Lane == 10 || Lane == 11 || Lane == 12)
+               y1 = -(TIME - timestamp) * v1 + y1;
+           end
            car = struct;
            car.ID = ID;
            car.lane = Lane;
@@ -241,10 +251,10 @@ if ~isempty(Network)
                             break;
                         end
                     end
-                    DX2 = d2 + TransmitLine - TravelledDistance2 + CarLength/2;
+                    DX2 = d2 + TransmitLine - TravelledDistance2 + CarLength/2 - WCRTD * v2;
                     TimeOfConflict = DX2/assignedVelocity2;
                     DT = TimeOfConflict + SafetyTimeBuffer;
-                    DX1 = d1 + TransmitLine - CarLength/2;
+                    DX1 = d1 + TransmitLine - CarLength/2 - WCRTD*v1;
                     Velocity(jj) = DX1/DT;
                     
                     if DX2<=0
@@ -265,7 +275,7 @@ if ~isempty(Network)
            
            end
 
-           %% Delete The initail Packet
+           %% Delete The First Packet in the Queue
            Network(ii) = [];
            
            %% Marshaling the response packet
@@ -276,8 +286,10 @@ if ~isempty(Network)
            ResponsePacket = struct;
            ResponsePacket.to = num2str(ID);
            ResponsePacket.ID = 0;
+           ResponsePacket.delay = 0.2*rand;
+           ResponsePacket.timestamp = TIME+WCRTD;       % SET THE ACTUATION TIMESTAMP
            ResponsePacket.msg.assignedVelocity = assignedVelocity;
-           car.TimeOfRequest = TIME;
+           car.TimeOfRequest = timestamp;
            car.finished = 0;
            Network = [Network;ResponsePacket];
            RequestedVehiclesList = [RequestedVehiclesList;car];

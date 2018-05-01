@@ -1,4 +1,4 @@
-function VehicleList = vehicleDynamics(VehicleList,L,h,amax,amin)
+function VehicleList = vehicleDynamics(VehicleList,L,h,amax,amin,time)
 Kp = 50;
 Ki = 5;
 Kd = 0.0001;
@@ -9,9 +9,10 @@ for i = 1:length(VehicleList)
     v = VehicleList(i).speed;
     sai = VehicleList(i).sai;
     a = VehicleList(i).acceleration;
+    ActuationTimestamp = VehicleList(i).ActuationTimestamp;
     desiredSpeed = VehicleList(i).desiredSpeed;
     %% Controller
-    if abs(desiredSpeed - v)>0.001
+    if abs(desiredSpeed - v)>0.001 && time > ActuationTimestamp
         integralError = VehicleList(i).integralError;
         previousSpeed = VehicleList(i).previousSpeed;
         speedError = desiredSpeed - v;
