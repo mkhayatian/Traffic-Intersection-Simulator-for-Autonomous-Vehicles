@@ -1,7 +1,7 @@
 function VehicleList = vehicleDynamics(VehicleList,L,h,amax,amin,time)
-Kp = 50;
-Ki = 5;
-Kd = 0.0001;
+Kp = 0.5/h;
+Ki = 0.05/h;
+Kd = h/100;
 for i = 1:length(VehicleList)
     x = VehicleList(i).position.x;
     y = VehicleList(i).position.y;
@@ -28,11 +28,11 @@ for i = 1:length(VehicleList)
     
     
     %% Differential Eq.
-    if sai > 3*pi/4
-        sai = 3*pi/4;
+    if sai > pi/4
+        sai = pi/4;
     end
-    if sai < -3*pi/4
-        sai =-3*pi/4;
+    if sai < -pi/4
+        sai =-pi/4;
     end
     xnew = x + h * (v .* cos( phi ));
     ynew = y + h * (v .* sin( phi ));

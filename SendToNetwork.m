@@ -1,4 +1,4 @@
-function [NetworkBuffer, VehicleList] = SendToNetwork(VehicleList, NetworkBuffer,IntersectionBounds,TransmitLine,time)
+function [NetworkBuffer, VehicleList] = SendToNetwork(VehicleList, NetworkBuffer,IntersectionBounds,TransmitLine,time,WCND,Log)
 
 BufferSize = 1000; 
 if length(NetworkBuffer) > BufferSize
@@ -28,7 +28,9 @@ for i = 1:length(VehicleList)
                 Packet.delay = 0.2*rand;
                 NetworkBuffer = [NetworkBuffer; Packet];
                 VehicleList(i).hasRequested = 1;
-                
+                if Log == 1
+                    disp(['A packet from ID = ',num2str(ID),'. V=',num2str(v),' X=', num2str(x),'Y=',num2str(y),'t=',num2str(time)]);
+                end
             end
         end
         if (Lane == 4) || (Lane == 5) || (Lane == 6) 
@@ -45,7 +47,9 @@ for i = 1:length(VehicleList)
                 Packet.delay = 0.2*rand;
                 NetworkBuffer = [NetworkBuffer; Packet];
                 VehicleList(i).hasRequested = 1;
-                
+                if Log == 1
+                    disp(['A packet from ID = ',num2str(ID),'. V=',num2str(v),' X=', num2str(x),'Y=',num2str(y),'t=',num2str(time)]);
+                end
             end
         end
         if (Lane == 7) || (Lane == 8) || (Lane == 9) 
@@ -62,7 +66,9 @@ for i = 1:length(VehicleList)
                 Packet.delay = 0.2*rand;
                 NetworkBuffer = [NetworkBuffer; Packet];
                 VehicleList(i).hasRequested = 1;
-                
+                if Log == 1
+                    disp(['A packet from ID = ',num2str(ID),'. V=',num2str(v),' X=', num2str(x),'Y=',num2str(y),'t=',num2str(time)]);
+                end
             end
         end
         if (Lane == 10) || (Lane == 11) || (Lane == 12) 
@@ -76,10 +82,12 @@ for i = 1:length(VehicleList)
                 Packet.msg.speed = v;
                 Packet.timestamp =time;
                 Packet.msg.DestinationLane = DestinationLane;
-                Packet.delay = 0.2*rand;
+                Packet.delay = WCND*rand;
                 NetworkBuffer = [NetworkBuffer; Packet];
                 VehicleList(i).hasRequested = 1;
-                
+                if Log == 1
+                    disp(['A packet from ID = ',num2str(ID),'. V=',num2str(v),' X=', num2str(x),'Y=',num2str(y),'t=',num2str(time)]);
+                end
             end
         end
     end

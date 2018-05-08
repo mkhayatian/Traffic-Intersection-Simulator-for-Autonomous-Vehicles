@@ -1,5 +1,4 @@
 function car = generateCar(Lane,ID,IntersectionBounds,laneWidth,minSpeed,maxSpeed)
-
 xb1 = IntersectionBounds.xb1;
 xb2 = IntersectionBounds.xb2;
 xb3 = IntersectionBounds.xb3;
@@ -16,6 +15,7 @@ car.sai = 0;
 car.speed = minSpeed + (maxSpeed - minSpeed)* rand;
 car.desiredSpeed = car.speed;
 car.integralError = 0;
+car.headingError = 0;
 car.previousSpeed = car.speed;
 car.hasRequested = 0;
 colors = lines(30);
@@ -27,7 +27,8 @@ if (Lane == 1)
     car.position.x = xb1 ;
     car.position.y = yb2 + 5*laneWidth/2;
     car.heading = 0;
-    car.DestinationLane = datasample([12 9],1);
+%     car.DestinationLane = datasample([12 9],1);
+    car.DestinationLane = datasample([12 9 8],1);
 elseif (Lane == 2)
     car.position.x = xb1 ;
     car.position.y = yb2 + 3*laneWidth/2;

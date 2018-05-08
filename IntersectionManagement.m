@@ -1,4 +1,4 @@
-function [Network,RequestedVehiclesList] = IntersectionManagement(Network,RequestedVehiclesListPrevious,Vmax,Vmin,laneWidth,TransmitLine,TIME,CarLength,WCRTD)
+function [Network,RequestedVehiclesList] = IntersectionManagement(Network,RequestedVehiclesListPrevious,Vmax,Vmin,laneWidth,TransmitLine,TIME,CarLength,WCRTD,WCND,Log)
 RequestedVehiclesList = RequestedVehiclesListPrevious;  % initialization
 arc = 2 * pi * (3.5*laneWidth) /4;
 smallArc = 2 * pi * (0.5*laneWidth) /4;
@@ -11,7 +11,7 @@ if ~isempty(Network)
     ii = 1;
     found = 0;
     while (ii <= length(Network)) && (found == 0)
-        if strcmp(Network(ii).to, 'IM') && TIME >  Network(ii).delay + Network(ii).timestamp     % if the packet if meant to be for the intersection manager 
+        if strcmp(Network(ii).to, 'IM') && TIME >  Network(ii).delay + Network(ii).timestamp     % delay in the network condition 
            Packet = Network(ii);
            %% Unmarshaling the packet
            ID = Packet.ID;
@@ -251,14 +251,17 @@ if ~isempty(Network)
                             break;
                         end
                     end
-                    DX2 = d2 + TransmitLine - TravelledDistance2 + CarLength/2 - WCRTD * v2;
+                    % DX2 = distance inside the intersection + distance
+                    % from intersection + vehicleLength/2 - travelled
+                    % distance after WCRTD seconds.
+                    DX2 = d2 + (TransmitLine - TravelledDistance2) + CarLength/2 - WCRTD * v2;
                     TimeOfConflict = DX2/assignedVelocity2;
                     DT = TimeOfConflict + SafetyTimeBuffer;
-                    DX1 = d1 + TransmitLine - CarLength/2 - WCRTD*v1;
+                    DX1 = d1 + TransmitLine - CarLength/2 - WCRTD * v1;
                     Velocity(jj) = DX1/DT;
                     
                     if DX2<=0
-                         Velocity(jj) = Vmax;       % first car is already inside the intersection
+                         Velocity(jj) = Vmax;       % the car is already passed the conflict point
                     end
                     if Velocity(jj) > Vmax
                         Velocity(jj) = Vmax;
@@ -286,12 +289,15 @@ if ~isempty(Network)
            ResponsePacket = struct;
            ResponsePacket.to = num2str(ID);
            ResponsePacket.ID = 0;
-           ResponsePacket.delay = 0.2*rand;
-           ResponsePacket.timestamp = TIME+WCRTD;       % SET THE ACTUATION TIMESTAMP
+           ResponsePacket.delay = WCND*rand;
+           ResponsePacket.timestamp = timestamp+WCRTD;       % SET THE ACTUATION TIMESTAMP
            ResponsePacket.msg.assignedVelocity = assignedVelocity;
            car.TimeOfRequest = timestamp;
            car.finished = 0;
            Network = [Network;ResponsePacket];
+           if Log == 1
+               disp(['A packet from IM to ID =',num2str(ID),' V=',num2str(assignedVelocity),' Tactuation=', num2str(timestamp+WCRTD)]);
+           end
            RequestedVehiclesList = [RequestedVehiclesList;car];
            found = 1;
         end
