@@ -31,7 +31,7 @@ TurnSpace = 2;
 %% Print parameters
 printStep = 20;
 printLabel = 1;         %% no print = 0, print ID = 1, print Speed = 2;
-print3D = 1;            %% 3D = 1, 2D = 0;
+print3D = 0;            %% 3D = 1, 2D = 0;
 %% Car Parameters
 CarLength = 6*1;
 CarWidth = 2;
@@ -44,8 +44,8 @@ CarGenerationDuration = SimulationTime - 100;
 %% Network
 Log = 1;            % 1 for logging all packets
 %% Intersection Manager
-method = 'Crossroads';
-% method = 'RIM';
+% method = 'Crossroads';
+method = 'RIM';
 ComputationSpeedFactor = 10;
 RequestedVehiclesList = [];
 Vmax = 15;

@@ -329,12 +329,12 @@ elseif strcmp(method , 'RIM')
         ii = 1;
         found = 0;
         while (ii <= length(Network)) && (found == 0)
-            if strcmp(Network(ii).to, 'IM') && TIME >  Network(ii).delay + Network(ii).timestamp     % delay in the network condition 
+            if strcmp(Network(ii).to, 'IM') && TIME >  Network(ii).delay + Network(ii).msg.timestamp     % delay in the network condition 
                Packet = Network(ii);
                %% Unmarshaling the packet
                ID = Packet.ID;
                Lane = Packet.msg.lane;
-               timestamp = Packet.timestamp;
+               timestamp = Packet.msg.timestamp;
                x1 = Packet.msg.position.x;
                y1 = Packet.msg.position.y;
                v1 = Packet.msg.speed;
@@ -597,13 +597,14 @@ elseif strcmp(method , 'RIM')
 %                if assignedTOA > 10
 %                    error('Facing traffic JAM!')
 %                end
+               
                car.assigned.TOA = assignedTOA;
                car.assigned.VOA = assignedVOA;
                ResponsePacket = struct;
                ResponsePacket.to = num2str(ID);
                ResponsePacket.ID = 0;
                ResponsePacket.delay = WCND*rand;
-               ResponsePacket.timestamp = TIME;          % initiation timestamp
+%                ResponsePacket.timestamp = TIME;          % initiation timestamp
 %                ResponsePacket.msg.assignedVOA = assignedVOA; % SET THE VOA
 %                ResponsePacket.msg.assignedTOA = assignedTOA; % SET THE TOA
                ResponsePacket.msg.timestamp = assignedTOA;              % SET THE TOA
