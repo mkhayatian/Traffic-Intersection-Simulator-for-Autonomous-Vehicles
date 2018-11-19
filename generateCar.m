@@ -1,4 +1,4 @@
-function car = generateCar(Lane,ID,IntersectionBounds,laneWidth,minSpeed,maxSpeed)
+function car = generateCar(Lane,ID,IntersectionBounds,laneWidth,minSpeed,maxSpeed,time)
 xb1 = IntersectionBounds.xb1;
 xb2 = IntersectionBounds.xb2;
 xb3 = IntersectionBounds.xb3;
@@ -8,6 +8,7 @@ yb2 = IntersectionBounds.yb2;
 yb3 = IntersectionBounds.yb3;
 yb4 = IntersectionBounds.yb4;
 car = struct;
+car.spawnTime = time;
 car.ID = ID;
 car.lane = Lane;
 car.acceleration = 0;
@@ -18,22 +19,30 @@ car.integralError = 0;
 car.headingError = 0;
 car.previousSpeed = car.speed;
 car.hasRequested = 0;
+car.hasReceived = 0;
+car.trajectory.A0 = 0;
+car.trajectory.B0 = 0;
 colors = lines(30);
 car.color = colors(ceil(rand*29),:);
 car.ActuationTimestamp = 0;
+car.receiveTimestamp = 0;
+car.receiveSpeed = 0;
+car.receivePosition = 0;
+car.IMWidth = 0;
 
 
 if (Lane == 1)
     car.position.x = xb1 ;
     car.position.y = yb2 + 5*laneWidth/2;
     car.heading = 0;
-%     car.DestinationLane = datasample([12 9],1);
-    car.DestinationLane = datasample([12 9 8],1);
+    car.DestinationLane = datasample([12 9],1);
+%     car.DestinationLane = datasample([12 9 8],1);
 elseif (Lane == 2)
     car.position.x = xb1 ;
     car.position.y = yb2 + 3*laneWidth/2;
     car.heading = 0;
     car.DestinationLane = datasample([8],1);
+%     car.DestinationLane = datasample([4 7 8 9 12],1);
 elseif (Lane == 3)
     car.position.x = xb1 ;
     car.position.y = yb2 + 1*laneWidth/2;

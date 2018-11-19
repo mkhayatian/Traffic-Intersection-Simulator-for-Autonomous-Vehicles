@@ -12,12 +12,6 @@ for i = 1:length(VehicleList)
     RrecY0=recX0*sin(phi)+recY0*cos(phi);
     recX=RrecX0 + PosX;
     recY=RrecY0 + PosY;
-%     if VehicleList(i).hasRequested == 0
-%         color = [0.9 0.2 0.1];
-%     else 
-%         color = [0.3 0.3 0.6];
-%     end
-%     line(recX,recY,'Color', color);
     
     drawBox(recX,recY,height,color)
     if printLabel == 1
