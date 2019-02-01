@@ -1,5 +1,5 @@
 # IM
 Run Intersection.m
 
-You can find the Original Paper [Here](https://www.semanticscholar.org/paper/Crossroads%3A-Time-Sensitive-Autonomous-Intersection-Andert-Khayatian/986da85e6a8b8c2205cd89887476ac4b0b362408/):
+You can find the related Papers [Crossroads](https://dl.acm.org/citation.cfm?id=3062221) and [RIM](https://ieeexplore.ieee.org/abstract/document/8603190).
 
