@@ -1,4 +1,4 @@
-function car = generateCar(Lane,ID,IntersectionBounds,laneWidth,minSpeed,maxSpeed,time)
+function car = generateCar(Lane,ID,IntersectionBounds,laneWidth,minSpeed,maxSpeed,time,method)
 xb1 = IntersectionBounds.xb1;
 xb2 = IntersectionBounds.xb2;
 xb3 = IntersectionBounds.xb3;
@@ -29,6 +29,7 @@ car.receiveTimestamp = 0;
 car.receiveSpeed = 0;
 car.receivePosition = 0;
 car.IMWidth = 0;
+car.accStop = 0;
 
 
 if (Lane == 1)
@@ -36,7 +37,9 @@ if (Lane == 1)
     car.position.y = yb2 + 5*laneWidth/2;
     car.heading = 0;
     car.DestinationLane = datasample([12 9],1);
-%     car.DestinationLane = datasample([12 9 8],1);
+    if strcmp(method ,'TrafficLight')
+        car.DestinationLane = datasample([9],1);
+    end
 elseif (Lane == 2)
     car.position.x = xb1 ;
     car.position.y = yb2 + 3*laneWidth/2;
@@ -53,6 +56,9 @@ elseif (Lane == 4)
     car.position.y = yb1 ;
     car.heading = pi/2;
     car.DestinationLane = datasample([3 12],1);
+    if strcmp(method ,'TrafficLight')
+        car.DestinationLane = datasample([12],1);
+    end
 elseif (Lane == 5)
     car.position.x = xb2 + 9*laneWidth/2;
     car.position.y = yb1 ;
@@ -68,6 +74,9 @@ elseif (Lane == 7)
     car.position.y = yb2 + 7*laneWidth/2;
     car.heading = pi;
     car.DestinationLane = datasample([6 3],1);
+    if strcmp(method ,'TrafficLight')
+        car.DestinationLane = datasample([3],1);
+    end
 elseif (Lane == 8)
     car.position.x = xb4 ;
     car.position.y = yb2 + 9*laneWidth/2;
@@ -83,6 +92,9 @@ elseif (Lane == 10)
     car.position.y = yb4 ;
     car.heading = 3*pi/2;
     car.DestinationLane = datasample([9 6],1);
+    if strcmp(method ,'TrafficLight')
+        car.DestinationLane = datasample([6],1);
+    end
 elseif (Lane == 11)
     car.position.x = xb2 + 3*laneWidth/2;
     car.position.y = yb4 ;

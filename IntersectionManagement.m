@@ -631,4 +631,6 @@ elseif strcmp(method , 'RIM')
        end
        i = i + 1;
     end
+elseif strcmp(method , 'TrafficLight')
+    RequestedVehiclesList = RequestedVehiclesListPrevious;   % do nothing
 end
