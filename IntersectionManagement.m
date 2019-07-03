@@ -22,6 +22,7 @@ if strcmp(method , 'Crossroads')
                y1 = Packet.msg.position.y;
                v1 = Packet.msg.speed;
                DestinationLane1 = Packet.msg.DestinationLane;
+               %% recover current position
                if (Lane == 1 || Lane == 2 || Lane == 3)
                    x1 = (TIME - timestamp) * v1 + x1;
                elseif (Lane == 4 || Lane == 5 || Lane == 6)
@@ -49,11 +50,16 @@ if strcmp(method , 'Crossroads')
                         v2 = RequestedVehiclesList(jj).speed;
                         x2 = RequestedVehiclesList(jj).position.x;
                         y2 = RequestedVehiclesList(jj).position.y;
+                        v02 = RequestedVehiclesList(jj).initialVelocity;
                         DestinationLane2 = RequestedVehiclesList(jj).DestinationLane;
                         assignedVelocity2 = RequestedVehiclesList(jj).assigned;
                         inOut2 = [lane2 DestinationLane2];
                         Now = TIME;
-                        TravelledDistance2 = (Now - RequestedVehiclesList(jj).TimeOfRequest)*assignedVelocity2;
+                        if (Now - RequestedVehiclesList(jj).TimeOfRequest) > WCRTD
+                            TravelledDistance2 = ((Now - RequestedVehiclesList(jj).TimeOfRequest) - WCRTD) * assignedVelocity2 + (WCRTD) * v02;
+                        else
+                            TravelledDistance2 = (Now - RequestedVehiclesList(jj).TimeOfRequest) * v02;
+                        end
                         if TravelledDistance2 > 200
                             RequestedVehiclesList(jj).finished = 1;
                         end
@@ -255,12 +261,15 @@ if strcmp(method , 'Crossroads')
                         % DX2 = distance inside the intersection + distance
                         % from intersection + vehicleLength/2 - travelled
                         % distance after WCRTD seconds.
-                        DX2 = d2 + (TransmitLine - TravelledDistance2) + CarLength/2 - WCRTD * v2;
-                        TimeOfConflict = DX2/assignedVelocity2;
+                        DX2 = d2 + (TransmitLine - TravelledDistance2) + CarLength/2;
+                        if (Now - RequestedVehiclesList(jj).TimeOfRequest) > WCRTD
+                            TimeOfConflict = DX2/assignedVelocity2;
+                        else 
+                            TimeOfConflict = (WCRTD * v02 - (Now - RequestedVehiclesList(jj).TimeOfRequest)*v02)/v02 + (DX2 - WCRTD * v02)/assignedVelocity2;
+                        end
                         DT = TimeOfConflict + SafetyTimeBuffer;
                         DX1 = d1 + TransmitLine - CarLength/2 - WCRTD * v1;
                         Velocity(jj) = DX1/DT;
-
                         if DX2<=0
                              Velocity(jj) = Vmax;       % the car is already passed the conflict point
                         end
@@ -296,6 +305,7 @@ if strcmp(method , 'Crossroads')
                ResponsePacket.msg.IMWidth = IMWidth;
                car.TimeOfRequest = timestamp;
                car.finished = 0;
+               car.initialVelocity = v1;
                Network = [Network;ResponsePacket];
                if Log == 1
                    disp(['A packet from IM to ID =',num2str(ID),' V=',num2str(assignedVelocity),' Tactuation=', num2str(timestamp+WCRTD)]);
